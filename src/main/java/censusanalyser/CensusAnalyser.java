@@ -26,10 +26,10 @@ public class CensusAnalyser {
     public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<IndiaCensusCSV> censusList = csvBuilder.getCSVFileIterator(reader, IndiaCensusCSV.class);
-            while (censusList.hasNext()) {
-                this.censusList.add(new IndiaCensusDAO(censusList.next()));
-            }
+            Iterator<IndiaCensusCSV> csvIterator = csvBuilder.getCSVFileIterator(reader, IndiaCensusCSV.class);
+            Iterable<IndiaCensusCSV> csvIterable = () -> csvIterator;
+            StreamSupport.stream(csvIterable.spliterator(), false).
+                    forEach(censusCSV -> censusList.add(new IndiaCensusDAO(censusCSV)));
             return this.censusList.size();
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -37,7 +37,7 @@ public class CensusAnalyser {
         } catch (CSVBuilderException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.SOME_OTHER_FILES_ERRORS);
         }
@@ -62,7 +62,11 @@ public class CensusAnalyser {
         return namOfEateries;
     }
 
-    public String getStateWiseSortedCensusData() {
+    public String getStateWiseSortedCensusData() throws CensusAnalyserException {
+        if (censusList == null || censusList.size() == 0) {
+            throw new CensusAnalyserException("No Census Data",
+                    CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
+        }
         Comparator<IndiaCensusDAO> csvComparable = Comparator.comparing(census -> census.state);
         this.sort(csvComparable);
         String sortStateData = new Gson().toJson(censusList);

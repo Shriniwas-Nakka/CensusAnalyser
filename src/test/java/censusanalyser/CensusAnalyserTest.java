@@ -1,6 +1,7 @@
 package censusanalyser;
 
 import com.google.gson.Gson;
+import org.apache.commons.csv.CSVParser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -12,6 +13,7 @@ public class CensusAnalyserTest {
     private static final String INDIA_STATE_CODE_CSV_FILE_PATH = "./src/test/resources/IndiaStateCode.csv";
     private static final String INDIA_STATE_CODE_CSV_DELIMITER_FILE_PATH = "./src/test/resources/IndiaStateCensusDelimiter.csv";
     private static final String INDIA_STATE_CODE_CSV_HEADER_MISSING_FILE_PATH = "./src/test/resources/IndiaStateCensusHeaderMissing.csv";
+    private static final String COMMON_CSV_FILE_PATH = "./src/test/resources/commonCSV.csv";
 
     @Test
     public void givenIndianCensusCSVFileReturnsCorrectRecords() {
