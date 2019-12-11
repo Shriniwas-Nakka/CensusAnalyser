@@ -225,4 +225,10 @@ public class CensusAnalyserTest {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.SOME_OTHER_FILES_ERRORS, e.type);
         }
     }
+
+    @Test
+    public void commonCSVFile() {
+        CensusAnalyser censusAnalyser = new CensusAnalyser();
+        censusAnalyser.commonCSVBuilder(INDIA_CENSUS_CSV_FILE_PATH);
+    }
 }

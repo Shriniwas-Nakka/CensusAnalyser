@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import csvBuilder.CSVBuilderException;
 import csvBuilder.CSVBuilderFactory;
 import csvBuilder.ICSVBuilder;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -83,6 +86,31 @@ public class CensusAnalyser {
                     censusList.set(j + 1, census1);
                 }
             }
+        }
+    }
+
+    public void commonCSVBuilder(String commonCsvFilePath) {
+        try (
+                Reader reader = Files.newBufferedReader(Paths.get(commonCsvFilePath));
+                CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
+        ) {
+            for (CSVRecord csvRecord : csvParser) {
+                // Accessing Values by Column Index
+                String name = csvRecord.get(0);
+                String email = csvRecord.get(1);
+                String phone = csvRecord.get(2);
+                String country = csvRecord.get(3);
+
+                System.out.println("Record No - " + csvRecord.getRecordNumber());
+                System.out.println("---------------");
+                System.out.println("Name : " + name);
+                System.out.println("Email : " + email);
+                System.out.println("Phone : " + phone);
+                System.out.println("Country : " + country);
+                System.out.println("---------------\n\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
