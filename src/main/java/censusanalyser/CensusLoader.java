@@ -17,7 +17,16 @@ public class CensusLoader {
 
     Map<String, CensusDAO> censusStateMap = new HashMap<String, CensusDAO>();
 
-    <E> Map<String, CensusDAO> loadCensusData(Class<E> censusClass, String... csvFilePath) throws CensusAnalyserException {
+    public <E> Map<String, CensusDAO> loadCensusData(CensusAnalyser.Country country, String... csvFilePath) throws CensusAnalyserException {
+        if (country.equals(CensusAnalyser.Country.INDIA))
+            return this.loadCensusData(IndiaCensusCSV.class, csvFilePath);
+        else if (country.equals(CensusAnalyser.Country.US))
+            return this.loadCensusData(USCensusCSV.class, csvFilePath);
+        else
+            throw new CensusAnalyserException("Incorrect Country", CensusAnalyserException.ExceptionType.INVALID_COUNTRY);
+    }
+
+    private <E> Map<String, CensusDAO> loadCensusData(Class<E> censusClass, String... csvFilePath) throws CensusAnalyserException {
 
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath[0]));) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
