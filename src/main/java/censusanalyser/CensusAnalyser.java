@@ -49,26 +49,17 @@ public class CensusAnalyser {
         try (Reader reader = Files.newBufferedReader(Paths.get(indiaCensusCsvFilePath));) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<IndiaStateCodeCSV> stateCSVIterator = csvBuilder.getCSVFileIterator(reader, IndiaStateCodeCSV.class);
-            while (stateCSVIterator.hasNext()) {
-                count++;
-                IndiaStateCodeCSV stateCSV = stateCSVIterator.next();
-                IndiaCensusDAO censusDAO = censusStateMap.get(stateCSV.stateName);
-                if (censusDAO == null) continue;
-                censusDAO.stateCode = stateCSV.stateCode;
-            }
-            return censusStateMap.size();
+            Iterable<IndiaStateCodeCSV> csvIterable = () -> stateCSVIterator;
+            StreamSupport.stream(csvIterable.spliterator(), false)
+                    .filter(csvState -> censusStateMap.get(csvState.stateName) != null)
+                    .forEach(censusCSV -> censusStateMap.get(censusCSV.stateName).state = censusCSV.stateCode);
+            return count;
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
         } catch (CSVBuilderException e) {
             throw new CensusAnalyserException(e.getMessage(), e.type.name());
         }
-    }
-
-    private <E> int getStateCount(Iterator<E> iterator) {
-        Iterable<E> iterable = () -> iterator;
-        int namOfEateries = (int) StreamSupport.stream(iterable.spliterator(), false).count();
-        return namOfEateries;
     }
 
     public String getStateWiseSortedCensusData() throws CensusAnalyserException {
