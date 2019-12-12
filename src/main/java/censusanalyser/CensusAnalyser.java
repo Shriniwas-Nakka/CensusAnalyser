@@ -117,7 +117,6 @@ public class CensusAnalyser {
                 String email = csvRecord.get(1);
                 String phone = csvRecord.get(2);
                 String country = csvRecord.get(3);
-
                 System.out.println("Record No - " + csvRecord.getRecordNumber());
                 System.out.println("---------------");
                 System.out.println("Name : " + name);

@@ -240,7 +240,7 @@ public class CensusAnalyserTest {
             int noOfRecords = censusAnalyser.loadUSCensusData(US_CENSUS_DATA);
             Assert.assertEquals(51, noOfRecords);
         } catch (CensusAnalyserException e) {
-            e.printStackTrace();
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.SOME_OTHER_FILES_ERRORS, e.type);
         }
     }
 }
