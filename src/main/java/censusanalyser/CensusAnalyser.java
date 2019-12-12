@@ -1,9 +1,6 @@
 package censusanalyser;
 
 import com.google.gson.Gson;
-import csvBuilder.CSVBuilderException;
-import csvBuilder.CSVBuilderFactory;
-import csvBuilder.ICSVBuilder;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -14,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class CensusAnalyser {
 
@@ -24,31 +20,13 @@ public class CensusAnalyser {
         this.censusStateMap = new HashMap<String, CensusDAO>();
     }
 
-    public int loadIndiaCensusData(String csvFilePath) throws CensusAnalyserException {
-        censusStateMap = new CensusLoader().loadCensusData(csvFilePath, IndiaCensusCSV.class);
+    public int loadIndiaCensusData(String... csvFilePath) throws CensusAnalyserException {
+        censusStateMap = new CensusLoader().loadCensusData(IndiaCensusCSV.class, csvFilePath);
         return censusStateMap.size();
     }
 
-    public int loadStateCode(String indiaCensusCsvFilePath) throws CensusAnalyserException {
-        int count = 0;
-        try (Reader reader = Files.newBufferedReader(Paths.get(indiaCensusCsvFilePath));) {
-            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<IndiaStateCodeCSV> stateCSVIterator = csvBuilder.getCSVFileIterator(reader, IndiaStateCodeCSV.class);
-            Iterable<IndiaStateCodeCSV> csvIterable = () -> stateCSVIterator;
-            StreamSupport.stream(csvIterable.spliterator(), false)
-                    .filter(csvState -> censusStateMap.get(csvState.stateName) != null)
-                    .forEach(censusCSV -> censusStateMap.get(censusCSV.stateName).state = censusCSV.stateCode);
-            return count;
-        } catch (IOException e) {
-            throw new CensusAnalyserException(e.getMessage(),
-                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
-        } catch (CSVBuilderException e) {
-            throw new CensusAnalyserException(e.getMessage(), e.type.name());
-        }
-    }
-
-    public int loadUSCensusData(String usCensusData) throws CensusAnalyserException {
-        censusStateMap = new CensusLoader().loadCensusData(usCensusData, USCensusCSV.class);
+    public int loadUSCensusData(String... usCensusData) throws CensusAnalyserException {
+        censusStateMap = new CensusLoader().loadCensusData(USCensusCSV.class, usCensusData);
         return censusStateMap.size();
     }
 

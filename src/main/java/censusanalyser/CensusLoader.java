@@ -17,9 +17,9 @@ public class CensusLoader {
 
     Map<String, CensusDAO> censusStateMap = new HashMap<String, CensusDAO>();
 
-    <E> Map<String, CensusDAO> loadCensusData(String csvFilePath, Class<E> censusClass) throws CensusAnalyserException {
+    <E> Map<String, CensusDAO> loadCensusData(Class<E> censusClass, String... csvFilePath) throws CensusAnalyserException {
 
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
+        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath[0]));) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<E> csvIterator = csvBuilder.getCSVFileIterator(reader, censusClass);
             Iterable<E> csvIterable = () -> csvIterator;
@@ -32,6 +32,8 @@ public class CensusLoader {
                         .map(USCensusCSV.class::cast)
                         .forEach(censusCSV -> censusStateMap.put(censusCSV.state, new CensusDAO(censusCSV)));
             }
+            if (csvFilePath.length == 1) return censusStateMap;
+            this.loadStateCode(censusStateMap, csvFilePath[0]);
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
@@ -45,4 +47,20 @@ public class CensusLoader {
         return censusStateMap;
     }
 
+    public int loadStateCode(Map<String, CensusDAO> censusStateMap, String indiaCensusCsvFilePath) throws CensusAnalyserException {
+        try (Reader reader = Files.newBufferedReader(Paths.get(indiaCensusCsvFilePath));) {
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            Iterator<IndiaStateCodeCSV> stateCSVIterator = csvBuilder.getCSVFileIterator(reader, IndiaStateCodeCSV.class);
+            Iterable<IndiaStateCodeCSV> csvIterable = () -> stateCSVIterator;
+            StreamSupport.stream(csvIterable.spliterator(), false)
+                    .filter(csvState -> censusStateMap.get(csvState.stateName) != null)
+                    .forEach(censusCSV -> censusStateMap.get(censusCSV.stateName).state = censusCSV.stateCode);
+            return censusStateMap.size();
+        } catch (IOException e) {
+            throw new CensusAnalyserException(e.getMessage(),
+                    CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
+        } catch (CSVBuilderException e) {
+            throw new CensusAnalyserException(e.getMessage(), e.type.name());
+        }
+    }
 }
