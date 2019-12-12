@@ -16,8 +16,6 @@ public class CensusAnalyser {
 
     public enum Country {INDIA, US}
 
-    ;
-
     Map<String, CensusDAO> censusStateMap;
 
     public CensusAnalyser() {
@@ -25,7 +23,8 @@ public class CensusAnalyser {
     }
 
     public int loadCensusData(Country country, String... csvFilePath) throws CensusAnalyserException {
-        censusStateMap = new CensusLoader().loadCensusData(country, csvFilePath);
+//        censusStateMap = new IndiaCensusAdaptor().loaderCensusData(country, csvFilePath);
+//        censusStateMap = new IndiaCensusAdaptor().loadCensusData(country, csvFilePath);
         return censusStateMap.size();
     }
 
