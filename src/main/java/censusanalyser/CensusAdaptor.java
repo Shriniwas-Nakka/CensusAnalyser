@@ -15,12 +15,12 @@ import java.util.stream.StreamSupport;
 
 public abstract class CensusAdaptor {
 
-    public abstract <E> Map<String, CensusDAO> loadCensusData(CensusAnalyser.Country country, String... csvFilePath) throws CensusAnalyserException;
+    public abstract Map<String, CensusDAO> loadCensusData(String... csvFilePath) throws CensusAnalyserException;
 
     protected <E> Map<String, CensusDAO> loadCensusData(Class<E> censusClass, String... csvFilePath) throws CensusAnalyserException {
 
-        Map<String, CensusDAO> censusStateMap = new HashMap<>();
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath[0]));) {
+        Map<String, CensusDAO> censusStateMap = new HashMap<String, CensusDAO>();
+        try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath[0]))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<E> csvIterator = csvBuilder.getCSVFileIterator(reader, censusClass);
             Iterable<E> csvIterable = () -> csvIterator;

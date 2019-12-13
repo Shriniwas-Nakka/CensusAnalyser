@@ -3,9 +3,9 @@ package censusanalyser;
 import com.opencsv.bean.CsvBindByName;
 
 public class USCensusCSV {
-
-    @CsvBindByName(column = "State Id", required = true)
-    public int stateId;
+    //    StateId,State,Population,HousingUnits,TotalArea,WaterArea,LandArea,PopulationDensity,HousingDensity
+    @CsvBindByName(column = "StateId", required = true)
+    public String stateId;
 
     @CsvBindByName(column = "State", required = true)
     public String state;
@@ -13,16 +13,22 @@ public class USCensusCSV {
     @CsvBindByName(column = "Population", required = true)
     public int population;
 
-    @CsvBindByName(column = "Housing", required = true)
-    public String housing;
+    @CsvBindByName(column = "HousingUnits", required = true)
+    public String housingUnits;
 
-    @CsvBindByName(column = "units", required = true)
-    public String units;
-
-    @CsvBindByName(column = "Total area", required = true)
+    @CsvBindByName(column = "TotalArea", required = true)
     public double totalArea;
 
-    @CsvBindByName(column = "Population Density", required = true)
+    @CsvBindByName(column = "WaterArea", required = true)
+    public double waterArea;
+
+    @CsvBindByName(column = "LandArea", required = true)
+    public double landArea;
+
+    @CsvBindByName(column = "PopulationDensity", required = true)
     public double populationDensity;
+
+    @CsvBindByName(column = "HousingDensity", required = true)
+    public String housing;
 
 }
