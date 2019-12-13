@@ -29,19 +29,8 @@ public class CensusAnalyser {
         this.sortBy.put(SortCensusData.DENSITY_PER_SQ_KM, Comparator.comparing(census -> census.densityPerSqKm, Comparator.reverseOrder()));
         this.sortBy.put(SortCensusData.TOTAL_AREA, Comparator.comparing(census -> census.totalArea, Comparator.reverseOrder()));
         this.sortBy.put(SortCensusData.POPULATION_DENSITY, Comparator.comparing(census -> census.populationDensity, Comparator.reverseOrder()));
-    }
-
-    public String getSortedCensusData(SortCensusData field) throws CensusAnalyserException {
-        if (censusStateMap == null || censusStateMap.size() == 0) {
-            throw new CensusAnalyserException("No Census Data",
-                    CensusAnalyserException.ExceptionType.NO_CENSUS_DATA);
-        }
-        ArrayList censusDTO = censusStateMap.values().stream()
-                .sorted(this.sortBy.get(field))
-                .map(censusDAO -> censusDAO.getCensusDTO(country))
-                .collect(Collectors.toCollection(ArrayList::new));
-        String sortedStateCensusJson = new Gson().toJson(censusDTO);
-        return sortedStateCensusJson;
+        Comparator<CensusDAO> comp = Comparator.comparing(censusDAO -> censusDAO.population, Comparator.reverseOrder());
+        this.sortBy.put(SortCensusData.POPULATION_AND_DENSITY, comp.thenComparing(censusDAO -> censusDAO.populationDensity, Comparator.reverseOrder()));
     }
 
     public int loadCensusData(String... csvFilePath) throws CensusAnalyserException {
