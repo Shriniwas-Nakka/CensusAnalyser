@@ -371,7 +371,7 @@ public class CensusAnalyserTest {
     }
 
     @Test
-    public void givenUSStateData_FirstSortBypopulation_AnsThenSortByDensity() {
+    public void givenUSStateData_FirstSortByPopulation_AnsThenSortByDensity() {
         try {
             usCensusAnalyser.loadCensusData(US_CENSUS_DATA);
             String sortedCensusData = usCensusAnalyser.getStateWiseSortedCensusData(SortCensusData.POPULATION_AND_DENSITY);
@@ -383,7 +383,7 @@ public class CensusAnalyserTest {
     }
 
     @Test
-    public void givenIndiaStateData_FirstSortBypopulation_AnsThenSortByDensity() {
+    public void givenIndiaStateData_FirstSortByPopulation_AnsThenSortByDensity() {
         try {
             censusAnalyser.loadCensusData(INDIA_CENSUS_CSV_FILE_PATH, INDIA_STATE_CODE_CSV_FILE_PATH);
             String sortedCensusData = censusAnalyser.getStateWiseSortedCensusData(SortCensusData.POPULATION_AND_DENSITY);
