@@ -9,6 +9,7 @@ import java.util.Map;
 public class UsStateAnalyzerTest {
     private static final String US_CENSUS_DATA = "./src/test/resources/USCensusData.csv";
     private static final String US_CENSUS_DATA_WITHOUT_HEADER = "./src/test/resources/USCensusDataWithoutHeader.csv";
+    private static final String US_CENSUS_DATA_IMPROPER_DELIMITER = "./src/test/resources/USCensusDataDelimiter.csv";
 
     CensusAdaptor censusAdapter = new USCensusAdaptor();
 
@@ -27,6 +28,17 @@ public class UsStateAnalyzerTest {
             ExpectedException exceptionRule = ExpectedException.none();
             exceptionRule.expect(CensusAnalyserException.class);
             censusAdapter.loadCensusData(US_CENSUS_DATA_WITHOUT_HEADER);
+        } catch (CensusAnalyserException e) {
+            Assert.assertEquals(CensusAnalyserException.ExceptionType.SOME_OTHER_FILES_ERRORS, e.type);
+        }
+    }
+
+    @Test
+    public void givenUSStateCSVFile_WhenImproperDelimiter_ThrowsException() {
+        try {
+            ExpectedException exceptionRule = ExpectedException.none();
+            exceptionRule.expect(CensusAnalyserException.class);
+            censusAdapter.loadCensusData(US_CENSUS_DATA_IMPROPER_DELIMITER);
         } catch (CensusAnalyserException e) {
             Assert.assertEquals(CensusAnalyserException.ExceptionType.SOME_OTHER_FILES_ERRORS, e.type);
         }

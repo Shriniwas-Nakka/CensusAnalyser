@@ -31,4 +31,14 @@ public class USCensusCSV {
     @CsvBindByName(column = "HousingDensity", required = true)
     public String housing;
 
+    public USCensusCSV() {
+    }
+
+    public USCensusCSV(String state, String stateCode, int population, double totalArea, double populationDensity) {
+        this.state = state;
+        this.stateId = stateCode;
+        this.population = population;
+        this.totalArea = totalArea;
+        this.populationDensity = populationDensity;
+    }
 }

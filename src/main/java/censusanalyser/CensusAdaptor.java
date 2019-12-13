@@ -33,9 +33,6 @@ public abstract class CensusAdaptor {
                         .map(USCensusCSV.class::cast)
                         .forEach(censusCSV -> censusStateMap.put(censusCSV.state, new CensusDAO(censusCSV)));
             }
-//            return censusStateMap;
-//            if (csvFilePath.length == 1) return censusStateMap;
-//            this.loadStateCode(censusStateMap, csvFilePath[0]);
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
                     CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
